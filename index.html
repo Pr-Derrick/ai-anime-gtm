@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Anime Drama — GTM Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090e;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #22222e;
+    --accent: #e8c547;
+    --accent2: #ff5e5e;
+    --accent3: #5eaaff;
+    --text: #e8e8f0;
+    --muted: #5a5a72;
+    --code-bg: #0d0d14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(9,9,14,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 140px 32px 80px;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    color: #fff;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: #9090a8;
+    max-width: 560px;
+    line-height: 1.75;
+    margin-bottom: 40px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .meta-pill.hot { border-color: var(--accent2); color: var(--accent2); }
+  .meta-pill.blue { border-color: var(--accent3); color: var(--accent3); }
+  .meta-pill.gold { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO BG lines */
+  .hero-lines {
+    position: absolute;
+    right: -60px;
+    top: 60px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    margin-top: 32px;
+  }
+
+  h3:first-child { margin-top: 0; }
+
+  p { color: #9090a8; margin-bottom: 12px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: #33334a; }
+
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .card-title .badge.warn { color: var(--accent2); border-color: var(--accent2); }
+  .card-title .badge.ok { color: #4ade80; border-color: #4ade80; }
+  .card-title .badge.info { color: var(--accent3); border-color: var(--accent3); }
+
+  .card p { margin-bottom: 0; font-size: 14px; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 20px;
+    position: relative;
+  }
+
+  .step-num-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+
+  .step-circle.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .step-circle.parallel {
+    border-color: #4ade80;
+    color: #4ade80;
+  }
+
+  .step-line {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    min-height: 24px;
+  }
+
+  .step-content {
+    padding-bottom: 28px;
+    padding-top: 6px;
+  }
+
+  .step-title {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .step-tool {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .step-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .tag-serial { background: #2a1010; color: #f87171; }
+  .tag-parallel { background: #0e2a1a; color: #4ade80; }
+  .tag-auto { background: #0e1a2a; color: var(--accent3); }
+
+  /* CODE BLOCKS */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    position: relative;
+  }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #a8d8a8;
+  }
+
+  .inline-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent3);
+  }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(34,34,46,0.5);
+    color: #c0c0d8;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td:first-child { color: var(--text); font-weight: 500; }
+
+  /* RULE BLOCKS */
+  .rule-block {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: #c0c0d8;
+  }
+
+  .rule-block.danger { border-left-color: var(--accent2); }
+  .rule-block.info { border-left-color: var(--accent3); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+
+  .checklist li {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: #c0c0d8;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--muted);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* PLATFORM CARDS */
+  .platform-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  .platform-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .platform-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(34,34,46,0.4);
+  }
+
+  .platform-row:last-child { border-bottom: none; }
+
+  .platform-label { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; }
+  .platform-val { color: var(--text); }
+
+  /* RUNNER SECTION */
+  .runner-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .runner-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .runner-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .runner-title {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .runner-desc { font-size: 13px; color: var(--muted); }
+
+  .runner-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+
+  /* QUESTIONS */
+  .q-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+  }
+
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  .q-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+  .q-note { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 8px 0 64px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-right { display: flex; gap: 16px; }
+
+  .footer-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover { color: var(--text); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.6s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#">⬡ AI Anime Workshop</a>
+  <ul class="nav-links">
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#claude">CLAUDE.md</a></li>
+    <li><a href="#scratchpad">Scratchpad</a></li>
+    <li><a href="#schema">Schema</a></li>
+    <li><a href="#runner">Runner</a></li>
+    <li><a href="#questions">Questions</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-lines" width="400" height="400" viewBox="0 0 400 400">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="400" height="400" fill="url(#grid)"/>
+  </svg>
+
+  <div class="hero-eyebrow fade-up">GTM AI Build Workshop · Template C · Reporting & Insights</div>
+  <h1 class="fade-up delay-1">AI <em>Anime</em> Drama<br>Production System</h1>
+  <p class="hero-sub fade-up delay-2">
+    A solo creator's complete workflow for producing AI anime short drama across
+    Hongguo, YouTube, and X — from theme input to published episode in under 2 hours.
+  </p>
+  <div class="hero-meta fade-up delay-3">
+    <span class="meta-pill gold">Template C · Reporting</span>
+    <span class="meta-pill blue">10-Step Pipeline</span>
+    <span class="meta-pill hot">Solo Creator</span>
+    <span class="meta-pill">3 Platforms</span>
+    <span class="meta-pill">Built 2026-05-19</span>
+  </div>
+</div>
+
+<!-- SCRATCHPAD -->
+<div class="section" id="scratchpad">
+  <div class="section-header">
+    <span class="section-num">00</span>
+    <h2>Scratchpad</h2>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card" style="border-left:3px solid var(--accent2)">
+      <div class="card-title">Sad Story <span class="badge warn">failure mode</span></div>
+      <p>Spent 3 days making one AI anime episode. Posted to three platforms. Under 500 views combined. No idea what went wrong — wrong genre, bad thumbnail, no hook, wrong time? No data. Just guessing. Same mistakes next week.</p>
+    </div>
+    <div class="card" style="border-left:3px solid #4ade80">
+      <div class="card-title">Happy Story <span class="badge ok">success mode</span></div>
+      <p>After each publish, cross-platform report in 24 hours. I know which genre gets 3× higher CTR, which platform drives followers. I know exactly what to make next week. 3 episodes per week, under ¥500 each.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Minimum Viable Test</div>
+    <p>1 theme → complete 10-step pipeline → 1 published episode on Hongguo → 72-hour data collection → <strong style="color:#4ade80">pass if completion rate ≥ 30% and no production errors</strong></p>
+  </div>
+
+  <h3>The Five Questions</h3>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="rule-block info"><strong>What decision does this improve?</strong> — What content to make each week, which platform to prioritize, at what cadence. Based on data, not guessing.</div>
+    <div class="rule-block info"><strong>What data do I trust?</strong> — Platform backend stats, Hongguo real-time trending chart, my own episode completion rates after publishing.</div>
+    <div class="rule-block info"><strong>What output would I use next week?</strong> — Cross-platform summary: best genre by completion rate, best platform for new followers, what to produce next.</div>
+    <div class="rule-block danger"><strong>What failure mode is embarrassing?</strong> — Character face changes between episodes. Robotic voiceover. No hook in first 3 seconds. Content taken down for violation.</div>
+    <div class="rule-block info"><strong>What tiny sample proves this works?</strong> — 1 theme → 10-step pipeline → 1 episode → 72-hour data. If completion ≥ 30%, scale to 10 episodes.</div>
+  </div>
+
+  <h3>Market Intelligence Summary</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Title</th><th>Genre</th><th>Views</th><th>Hook</th></tr></thead>
+      <tbody>
+        <tr><td>斩仙台下，我震惊了诸神</td><td>Cultivation + Anti-Authority</td><td>1.07B</td><td>3s: Heaven tribunal</td></tr>
+        <tr><td>全民诡异：开局掌握零元购</td><td>Apocalypse + Rules Horror</td><td>320M</td><td>3s: World descends</td></tr>
+        <tr><td>我在末世开超市</td><td>Apocalypse + System</td><td>220M</td><td>3s: Zombie siege</td></tr>
+        <tr><td>极寒-70℃：变卖百亿家产</td><td>Apocalypse + Base Building</td><td>160M</td><td>3s: Extreme cold hits</td></tr>
+        <tr><td>凤位与你，皆非我愿</td><td>Palace Drama + Reincarnation</td><td>150M</td><td>3s: Concubine awakens</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px">→ Recommended for solo creator: <strong style="color:var(--accent)">Apocalypse + Female Lead</strong> — proven on Hongguo, empty space on YouTube.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- PIPELINE / README -->
+<div class="section" id="pipeline">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Production Pipeline</h2>
+  </div>
+
+  <p style="margin-bottom:28px">10 steps from story idea to published episode. Steps 0–2 are serial and cannot be skipped. Steps 4–7 can run in parallel once Step 3 is approved.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle active">0</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Genre & Competitive Research</div>
+        <div class="step-tool">Doubao · 15 min</div>
+        <div class="step-tags"><span class="tag tag-serial">must serial</span></div>
+        <p style="font-size:13px;margin-top:8px">Pick one genre. Commit. Recommended: Apocalypse + Female Lead. Do not start production until genre is written in scratchpad.md.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle active">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Story Bible</div>
+        <div class="step-tool">Claude · 20 min</div>
+        <div class="step-tags"><span class="tag tag-serial">must serial</span></div>
+        <pre><code>"I'm building an AI anime short drama. Genre: [genre].
+Premise: [one sentence].
+Write: World (3 sentences), Protagonist (30 words),
+Main conflict, 10-episode arc. Keep it short."</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle active">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Character Bible + 8 Reference Images</div>
+        <div class="step-tool">Seedance 2.0 / 即梦 · 30 min</div>
+        <div class="step-tags"><span class="tag tag-serial">must serial</span><span class="tag" style="background:#1a1a30;color:var(--accent)">⚠ most critical</span></div>
+        <p style="font-size:13px;margin-top:8px">Generate: front face, side profile, half-body, full body, smiling, angry, surprised, signature outfit. Save to <span class="inline-code">data/raw/characters/</span>. Do not start production without these locked.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">10-Episode Outline</div>
+        <div class="step-tool">Claude · 20 min</div>
+        <div class="step-tags"><span class="tag tag-serial">must serial</span></div>
+        <p style="font-size:13px;margin-top:8px">Every episode must have a hook AND a cliffhanger. Table format. Each cell under 20 words.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle parallel">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Script + Storyboard + Image Prompts</div>
+        <div class="step-tool">GPT · 15 min/episode</div>
+        <div class="step-tags"><span class="tag tag-parallel">parallel</span><span class="tag tag-auto">automatable</span></div>
+        <p style="font-size:13px;margin-top:8px">200-word script · 8-shot storyboard table · 8 Seedance image prompts per episode. Each prompt must include character reference + forbidden changes.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle parallel">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Video Generation</div>
+        <div class="step-tool">Seedance 2.0 · 60 min/episode</div>
+        <div class="step-tags"><span class="tag tag-parallel">parallel</span><span class="tag tag-auto">automatable</span></div>
+        <p style="font-size:13px;margin-top:8px">Full Reference Mode. Always attach character pack. Delete and regenerate any clip where face has drifted. Save to <span class="inline-code">data/enriched/episode-N/clips/</span></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle parallel">6</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Voiceover Generation</div>
+        <div class="step-tool">ElevenLab · 15 min/episode</div>
+        <div class="step-tags"><span class="tag tag-parallel">parallel</span><span class="tag tag-serial">approved script only</span></div>
+        <p style="font-size:13px;margin-top:8px">Only after checkpoint 4 passed. Costs quota. Add breathing + micro-pauses before power moments. English for YouTube · Mandarin for Hongguo.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle">7</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Final Edit</div>
+        <div class="step-tool">CapCut / 剪映 · 30 min/episode</div>
+        <div class="step-tags"><span class="tag tag-serial">human review</span></div>
+        <p style="font-size:13px;margin-top:8px">Sync audio (≤0.5s offset) · Subtitles · BGM · Sound effects at power moments · Transitions ≤0.3s · Final runtime: 60–90s (Hongguo) or 3–5min (YouTube)</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle parallel">8</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Thumbnail + Title A/B</div>
+        <div class="step-tool">Canva + GPT · 20 min/episode</div>
+        <div class="step-tags"><span class="tag tag-parallel">parallel w/ Step 7</span></div>
+        <p style="font-size:13px;margin-top:8px">3 title options per platform · 2 thumbnail concepts (A/B) · YouTube: add [MULTI SUB] for Latin America + Southeast Asia reach</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num-col">
+        <div class="step-circle">9</div>
+        <div class="step-line" style="opacity:0"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Publish + 72-Hour Data Collection</div>
+        <div class="step-tool">Hongguo → YouTube → X · 10 min</div>
+        <div class="step-tags"><span class="tag tag-auto">runner automation</span></div>
+        <p style="font-size:13px;margin-top:8px">Log to database · Set 24h + 72h reminders · <strong style="color:#4ade80">Pass if completion ≥ 30%</strong> → scale · <strong style="color:var(--accent2)">Fail</strong> → diagnose before producing more</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CLAUDE.MD -->
+<div class="section" id="claude">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>CLAUDE.md</h2>
+  </div>
+
+  <div class="rule-block" style="margin-bottom:20px">
+    Read this file at the start of every Claude Code session. Do not override these rules without explicit approval.
+  </div>
+
+  <h3>Tool Roles — No Overlap</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tool</th><th>Role</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td>Claude</td><td>Story structure, character arcs, plot density, episode outlines</td><td>Storyboards, image prompts</td></tr>
+        <tr><td>GPT</td><td>Storyboards, shot lists, image prompts, production tasks</td><td>Long-form narrative</td></tr>
+        <tr><td>ElevenLab</td><td>Voiceover only — after script is locked</td><td>Anything before approval</td></tr>
+        <tr><td>Seedance 2.0</td><td>Video generation, character consistency</td><td>Final editing</td></tr>
+        <tr><td>Canva</td><td>Thumbnails, character cards, visual templates</td><td>Video production</td></tr>
+        <tr><td>CapCut / 剪映</td><td>Final edit, subtitles, BGM, transitions</td><td>Story or script work</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--accent2)">★ VideoScribe removed from pipeline. Whiteboard animation tool — not suitable for anime drama.</p>
+
+  <h3>The Hook Rules (Non-Negotiable)</h3>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="rule-block"><strong>0–3 seconds:</strong> Conflict, humiliation, danger, secret, or identity reversal — one of these, immediately. No world-building.</div>
+    <div class="rule-block"><strong>Every 10 seconds:</strong> A new power moment, reversal, or revelation.</div>
+    <div class="rule-block"><strong>Final 5 seconds:</strong> Cliffhanger or unanswered question. Never resolve the episode.</div>
+  </div>
+
+  <h3>Character Consistency Rules</h3>
+  <div class="card">
+    <div class="card-title">Bad Prompt <span class="badge warn">rejected</span></div>
+    <pre><code>"A cool female lead walks into the ruins."</code></pre>
+  </div>
+  <div class="card">
+    <div class="card-title">Good Prompt <span class="badge ok">approved</span></div>
+    <pre><code>"Using Character Reference A. Same face, same black hair, same white robe,
+same jade pendant. Shot: medium, female lead steps through collapsed gate,
+slow push-in, cold light, tense atmosphere.
+Forbidden: change face shape, change hair color, add accessories."</code></pre>
+  </div>
+
+  <h3>Data Layers</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Contents</th><th>Location</th></tr></thead>
+      <tbody>
+        <tr><td>Raw</td><td>Story theme, character brief, reference images</td><td><span class="inline-code">data/raw/</span></td></tr>
+        <tr><td>Enriched</td><td>Narrative script, voiceover file, storyboard, shot list</td><td><span class="inline-code">data/enriched/</span></td></tr>
+        <tr><td>Computed</td><td>Final video, platform drafts, performance metrics</td><td><span class="inline-code">data/computed/</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Failure Modes</h3>
+  <ul class="checklist">
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>Character face changes between episodes — audience drops immediately</li>
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>Voiceover sounds robotic with no emotional pauses — completion rate collapses</li>
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>First 3 seconds have no conflict — algorithm won't distribute</li>
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>Episode ends without cliffhanger — no next-episode pull</li>
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>Content flagged for copyright or policy violation — taken down</li>
+    <li><div class="check-box" style="border-color:var(--accent2)"></div>Audio and video out of sync by more than 0.5 seconds</li>
+  </ul>
+</div>
+
+<div class="divider"></div>
+
+<!-- PLATFORMS -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Platform Strategy</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+    <div class="platform-card" style="border-top:3px solid var(--accent2)">
+      <div class="platform-name" style="color:var(--accent2)">Hongguo</div>
+      <div class="platform-row"><span class="platform-label">Format</span><span class="platform-val">9:16 vertical</span></div>
+      <div class="platform-row"><span class="platform-label">Hook window</span><span class="platform-val">3 seconds</span></div>
+      <div class="platform-row"><span class="platform-label">KPI</span><span class="platform-val">Completion ≥ 30%</span></div>
+      <div class="platform-row"><span class="platform-label">Revenue</span><span class="platform-val">Rev-share (40× coeff)</span></div>
+      <div class="platform-row"><span class="platform-label">Cadence</span><span class="platform-val">1 episode / day</span></div>
+    </div>
+    <div class="platform-card" style="border-top:3px solid var(--accent3)">
+      <div class="platform-name" style="color:var(--accent3)">YouTube</div>
+      <div class="platform-row"><span class="platform-label">Format</span><span class="platform-val">16:9 horizontal</span></div>
+      <div class="platform-row"><span class="platform-label">Strategy</span><span class="platform-val">1–7hr compilations</span></div>
+      <div class="platform-row"><span class="platform-label">KPI</span><span class="platform-val">Avg Watch Time</span></div>
+      <div class="platform-row"><span class="platform-label">Revenue</span><span class="platform-val">AdSense</span></div>
+      <div class="platform-row"><span class="platform-label">Cadence</span><span class="platform-val">3 episodes / week</span></div>
+    </div>
+    <div class="platform-card" style="border-top:3px solid var(--muted)">
+      <div class="platform-name" style="color:var(--muted)">X / Twitter</div>
+      <div class="platform-row"><span class="platform-label">Format</span><span class="platform-val">Square or vertical</span></div>
+      <div class="platform-row"><span class="platform-label">Strategy</span><span class="platform-val">60s clip extracts</span></div>
+      <div class="platform-row"><span class="platform-label">KPI</span><span class="platform-val">Followers + Reach</span></div>
+      <div class="platform-row"><span class="platform-label">Revenue</span><span class="platform-val">Audience building</span></div>
+      <div class="platform-row"><span class="platform-label">Cadence</span><span class="platform-val">1 clip / day</span></div>
+    </div>
+  </div>
+
+  <div class="rule-block info">
+    <strong>Dual-market asset strategy:</strong> Generate wider frame → crop 9:16 for Hongguo fast-cut version → keep 16:9 for YouTube long compilation. One production, two outputs.
+  </div>
+  <div class="rule-block info">
+    <strong>YouTube localization:</strong> Title format: [Genre] + [Hook] + [MULTI SUB] · Covers Latin America, Southeast Asia, North America · Anime content exempt from AI labeling requirements.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SCHEMA -->
+<div class="section" id="schema">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>schema.sql</h2>
+  </div>
+
+  <p style="margin-bottom:20px">SQLite database for Template C reporting pipeline. Six tables covering episodes, publishes, 24h/72h metrics, character registry, weekly summaries, and production log.</p>
+
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">episodes <span class="badge info">master</span></div>
+      <p>episode_number, series_name, title_cn, title_en, genre, sub_genre, production_cost, production_hours, character_consistent</p>
+    </div>
+    <div class="card">
+      <div class="card-title">publishes <span class="badge info">per platform</span></div>
+      <p>episode_id, platform, format, publish_date, thumbnail_ver (A/B), title_used, tags, status, url</p>
+    </div>
+    <div class="card">
+      <div class="card-title">metrics_24h <span class="badge ok">data</span></div>
+      <p>views, completion_rate, click_rate, saves, shares, comments, new_followers, heat_score</p>
+    </div>
+    <div class="card">
+      <div class="card-title">metrics_72h <span class="badge ok">go/no-go</span></div>
+      <p>views, completion_rate, click_rate, saves, revenue_estimate, <strong style="color:#4ade80">pass_threshold</strong> (1 if ≥30%)</p>
+    </div>
+    <div class="card">
+      <div class="card-title">characters <span class="badge">registry</span></div>
+      <p>name, description, face/hair/eyes/outfit, do_not_change rules, reference_images paths, locked flag</p>
+    </div>
+    <div class="card">
+      <div class="card-title">weekly_summary <span class="badge info">report</span></div>
+      <p>best_platform, best_genre, avg_completion_rate, total_revenue_est, total_cost, roi_ratio, key_insight, next_week_action</p>
+    </div>
+  </div>
+
+  <pre><code>-- Go/No-Go query after each episode
+SELECT e.title_en, p.platform, p.publish_date,
+       m.views, m.completion_rate, m.pass_threshold
+FROM episodes e
+JOIN publishes p ON e.id = p.episode_id
+JOIN metrics_72h m ON p.id = m.publish_id
+ORDER BY p.publish_date DESC LIMIT 10;</code></pre>
+</div>
+
+<div class="divider"></div>
+
+<!-- RUNNER -->
+<div class="section" id="runner">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Runner Integration</h2>
+  </div>
+
+  <div class="rule-block info" style="margin-bottom:24px">
+    <strong>Runner = Operations layer.</strong> Claude Code handles production (scripts, video). Runner handles operations (data collection, scheduling, monitoring, reporting). They do not overlap.
+  </div>
+
+  <div class="runner-grid">
+    <div class="runner-item">
+      <div class="runner-num">01</div>
+      <div>
+        <div class="runner-title">Daily Content Briefing</div>
+        <div class="runner-desc">Every morning at 8:30am. Pulls Google Sheets performance data, flags best/worst completion rates, checks Gmail for platform notifications, tells you what to produce today in one sentence.</div>
+      </div>
+      <span class="runner-tag">Automation · Daily</span>
+    </div>
+    <div class="runner-item">
+      <div class="runner-num">02</div>
+      <div>
+        <div class="runner-title">Post-Publish Data Collection</div>
+        <div class="runner-desc">Triggered after each publish. Logs views, completion rate, CTR to Sheets at 24h. If completion &lt; 30%, auto-drafts Gmail diagnosis (hook too slow? thumbnail underperformed?).</div>
+      </div>
+      <span class="runner-tag">Workflow · Triggered</span>
+    </div>
+    <div class="runner-item">
+      <div class="runner-num">03</div>
+      <div>
+        <div class="runner-title">Weekly Performance Report</div>
+        <div class="runner-desc">Every Monday 9am. Pulls last 7 days from Sheets, ranks by completion rate, drafts Google Doc report, sends Gmail with link + one key insight. Under 300 words. Read in 5 minutes.</div>
+      </div>
+      <span class="runner-tag">Automation · Monday</span>
+    </div>
+    <div class="runner-item">
+      <div class="runner-num">04</div>
+      <div>
+        <div class="runner-title">Heartbeat Monitoring</div>
+        <div class="runner-desc">Background always-on. Notifies immediately: platform policy emails, copyright flags, completion rate drops below 20%, 3+ days without publishing.</div>
+      </div>
+      <span class="runner-tag">Heartbeat · Always-on</span>
+    </div>
+    <div class="runner-item">
+      <div class="runner-num">05</div>
+      <div>
+        <div class="runner-title">AI Anime Workspace</div>
+        <div class="runner-desc">Isolated workspace in Runner: Gmail + Google Sheets + Google Drive + Google Docs. Morning briefing stays separate from personal. Memory scoped to this project only.</div>
+      </div>
+      <span class="runner-tag">Workspace · Isolated</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px">Runner Memory — Set Once</h3>
+  <pre><code>"Remember for all tasks in this workspace:
+- I produce AI anime short dramas
+- Target platforms: Hongguo (Chinese), YouTube (English), X
+- Success metric: episode completion rate ≥ 30%
+- Genre focus: apocalypse + female lead
+- Solo creator — keep recommendations for one person
+- Production cadence: 3 episodes per week target"</code></pre>
+</div>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Skills (.skills/)</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">write-narrative.md</div>
+      <p>Repeatable script-writing skill. Input: episode outline + character pack. Output: 200–250 word voiceover script. Enforces hook structure, sentence length ≤15 words, cliffhanger ending.</p>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">Use every episode · After Step 3 approved</div>
+    </div>
+    <div class="card">
+      <div class="card-title">weekly-report.md</div>
+      <p>Monday reporting skill. Includes the SQL query to pull last week's data. Output: plain text, one page, one key insight, one next-week decision. Not a presentation — a decision tool.</p>
+      <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">Use every Monday · Feeds Runner automation</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- QUESTIONS FOR CHARLIE -->
+<div class="section" id="questions">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Questions for Justin / Charlie</h2>
+  </div>
+
+  <p style="margin-bottom:24px">Ordered by priority. Core capability questions first, then workflow design, then product direction.</p>
+
+  <h3>Core Capability</h3>
+
+  <div class="q-block">
+    <span class="q-num">Q1</span>
+    <div>
+      <div class="q-text">"My pipeline outputs files to Google Drive after each episode — scripts, voiceover, storyboards, final video. Can Runner watch a Drive folder and automatically trigger a workflow when a new file appears? Or does it only work on a time schedule?"</div>
+      <div class="q-note">→ event-triggered vs time-triggered automation</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q2</span>
+    <div>
+      <div class="q-text">"I track all episode performance in a Google Sheet. Can Runner read that sheet, compare rows, and alert me when completion rate drops below 30% — without me asking every time? Can Heartbeat rules use Sheets data as the trigger?"</div>
+      <div class="q-note">→ threshold alerts on structured data</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q3</span>
+    <div>
+      <div class="q-text">"I publish to Hongguo (Chinese platform) and YouTube. Neither has a direct Runner connector. What's the best workaround — browser automation? Can Runner log into Hongguo via browser and pull my analytics dashboard stats?"</div>
+      <div class="q-note">→ browser automation for platforms with no API</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q4</span>
+    <div>
+      <div class="q-text">"ElevenLab and Seedance 2.0 don't have Runner connectors. Can I connect them via custom MCP server? How hard is that setup for a non-engineer?"</div>
+      <div class="q-note">→ custom MCP server complexity</div>
+    </div>
+  </div>
+
+  <h3>Workflow Design</h3>
+
+  <div class="q-block">
+    <span class="q-num">Q5</span>
+    <div>
+      <div class="q-text">"I want a post-publish checklist that runs automatically every time I upload a new episode. Can Runner be triggered from a Google Drive upload event, or only from a time schedule?"</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q6</span>
+    <div>
+      <div class="q-text">"If I tell Runner 'my target completion rate threshold is 30%', will it apply that across every future performance report without me repeating it? How persistent is the memory across automations?"</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q7</span>
+    <div>
+      <div class="q-text">"I'm solo right now. If I add a co-producer later, can they share the same Runner workspace and automations? How does multi-user collaboration work?"</div>
+    </div>
+  </div>
+
+  <h3>Product Direction</h3>
+
+  <div class="q-block">
+    <span class="q-num">Q8</span>
+    <div>
+      <div class="q-text">"Runner's use cases are all email/calendar/Slack. Are you seeing any content creators or media production teams using it for production operations? Or is that a new use case for you?"</div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <span class="q-num">Q9</span>
+    <div>
+      <div class="q-text">"I'm running a dual-market strategy — Chinese platforms and YouTube. Two different tool stacks, two languages, two analytics systems. Is Runner optimized for that kind of fragmented setup, or primarily for single-ecosystem users?"</div>
+    </div>
+  </div>
+
+  <div class="q-block" style="border-color:var(--accent)">
+    <span class="q-num" style="color:var(--accent)">Q10★</span>
+    <div>
+      <div class="q-text" style="color:#fff">"I have a CLAUDE.md file that defines all the rules for my project — character consistency, platform specs, hook structure. Claude Code reads it every session. Is there a way to feed that context file into Runner's memory so both tools understand my project the same way? Could Runner and Claude Code share persistent context?"</div>
+      <div class="q-note">→ Best question. Gets at Runner × Claude Code integration potential.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TODO -->
+<div class="section" id="todo">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>TODO — Current State</h2>
+  </div>
+
+  <div class="rule-block" style="margin-bottom:24px">
+    <strong>Next Action:</strong> Lock these four things before touching any tool — Series title · Protagonist · Episode 1 conflict · Genre
+  </div>
+
+  <h3>This Week</h3>
+  <ul class="checklist">
+    <li><div class="check-box"></div>Fill in all [FILL IN] fields in CLAUDE.md (genre, style, visual keywords)</li>
+    <li><div class="check-box"></div>Complete Episode 1 section in scratchpad.md</li>
+    <li><div class="check-box"></div>Generate 8 protagonist reference images (Seedance / 即梦)</li>
+    <li><div class="check-box"></div>Lock character pack → save to <span class="inline-code">data/raw/characters/</span></li>
+    <li><div class="check-box"></div>Write Episode 1 narrative (200–300 words)</li>
+    <li><div class="check-box"></div>Review narrative out loud — hook rules check</li>
+    <li><div class="check-box"></div>Generate voiceover (ElevenLab) — only after narrative approved</li>
+    <li><div class="check-box"></div>Generate storyboard → Seedance → edit in CapCut</li>
+    <li><div class="check-box"></div>Publish to Hongguo · Set 72-hour data reminder</li>
+  </ul>
+
+  <h3>Completed</h3>
+  <ul class="checklist">
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>Market research: Top 10 Hongguo AI dramas (Doubao)</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>YouTube opportunity analysis (Gemini)</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>Workflow diagnosis + optimization (GPT)</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>Tencent ecosystem deep-dive (Yuanbao)</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>CLAUDE.md · scratchpad.md · TODO.md · schema.sql created</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>Runner integration plan + questions for Justin</li>
+    <li><div class="check-box" style="background:var(--surface2);border-color:#4ade80"></div>This workshop page built</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-left">AI Anime Drama Workshop · GTMPath · Built 2026-05-19</div>
+  <div class="footer-right">
+    <a class="footer-link" href="https://github.com/GTMpath/gtm-workshop-participant" target="_blank">GitHub Repo</a>
+    <a class="footer-link" href="https://runner.now" target="_blank">Runner</a>
+    <a class="footer-link" href="https://guides.runner.now" target="_blank">Runner Docs</a>
+  </div>
+</footer>
+
+</body>
+</html>
