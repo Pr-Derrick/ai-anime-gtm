@@ -1,4 +1,10 @@
-# AI Anime Drama — Build Guide
+## How to Use This Repo
+
+1. Open this repo in Claude Code
+2. Claude reads CLAUDE.md and CONTEXT.md automatically
+3. Start with scratchpad.md — answer the five questions
+4. Follow README.md step by step
+5. First episode script is ready in SCRIPT-EP1.md — publish before building automation# AI Anime Drama — Build Guide
 
 This is your step-by-step guide for the workshop and beyond.
 Open this file in Claude Code. Follow the checkpoints in order.
